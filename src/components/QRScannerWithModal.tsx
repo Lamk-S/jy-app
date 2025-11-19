@@ -108,7 +108,8 @@ export default function QRScannerWithModal() {
 
     const tempScanner = new Html5Qrcode(scannerRef.current!.id);
     try {
-      const decodedText = await tempScanner.scanFile(file, true);
+      // Cambiar showImage a false para evitar modificar el DOM del div #reader, lo que podría causar conflictos en escaneos posteriores
+      const decodedText = await tempScanner.scanFile(file, false);
       await handleScan(decodedText);
     } catch (err) {
       console.warn("Error QR desde imagen:", err);
@@ -267,7 +268,11 @@ export default function QRScannerWithModal() {
             type="file"
             accept="image/*"
             onChange={(e) => {
-              if (e.target.files?.[0]) scanImage(e.target.files[0]);
+              if (e.target.files?.[0]) {
+                scanImage(e.target.files[0]);
+                // Resetear el input para permitir seleccionar el mismo archivo nuevamente si es necesario
+                e.target.value = '';
+              }
             }}
             className="hidden"
             aria-label="Seleccionar imagen para escanear QR"
