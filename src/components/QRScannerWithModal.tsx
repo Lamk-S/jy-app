@@ -185,7 +185,7 @@ export default function QRScannerWithModal() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center gap-6 p-6 bg-linear-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <div className="flex flex-col w-full items-center justify-center gap-6 p-6 bg-linear-to-br from-blue-50 to-indigo-100 rounded-xl h-screen">
       {/* Header con instrucciones */}
       <div className="text-center">
         <h2 className="text-2xl font-semibold text-gray-800 mb-2">Escáner de Productos</h2>
@@ -256,7 +256,7 @@ export default function QRScannerWithModal() {
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
           </svg>
-          {isScanning ? "Escaneando..." : "Escanear con Cámara"}
+          {isScanning ? "Escaneando..." : "Escanear"}
         </button>
 
         <label className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg shadow-md cursor-pointer transition-all duration-200">
