@@ -185,11 +185,11 @@ export default function QRScannerWithModal() {
   }, []);
 
   return (
-    <div className="flex flex-col w-full items-center justify-center gap-6 p-6 bg-linear-to-br from-blue-50 to-indigo-100 rounded-xl h-screen">
+    <div className="flex flex-col w-full items-center justify-center gap-6 p-6 bg-linear-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 rounded-xl h-full">
       {/* Header con instrucciones */}
       <div className="text-center">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-2">Escáner de Productos</h2>
-        <p className="text-gray-600 text-sm">
+        <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Escáner de Productos</h2>
+        <p className="text-gray-600 dark:text-gray-400 text-sm">
           Escanea el código QR de un producto para ver sus detalles y gestionar el inventario.
         </p>
       </div>
@@ -199,10 +199,10 @@ export default function QRScannerWithModal() {
         <div
           id="reader"
           ref={scannerRef}
-          className={`w-full h-64 border-2 rounded-xl bg-white shadow-lg overflow-hidden transition-all duration-300 ${
+          className={`w-full h-64 border-2 rounded-xl bg-white dark:bg-gray-800 shadow-lg overflow-hidden transition-all duration-300 ${
             isScanning
               ? "border-blue-500 shadow-blue-200 animate-pulse"
-              : "border-gray-300"
+              : "border-gray-300 dark:border-gray-600"
           }`}
           aria-label="Área de escaneo QR"
         />
@@ -224,8 +224,8 @@ export default function QRScannerWithModal() {
 
         {/* Placeholder cuando no está escaneando */}
         {!isScanning && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-80 rounded-xl">
-            <div className="text-center text-gray-500">
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-700 bg-opacity-80 rounded-xl">
+            <div className="text-center text-gray-500 dark:text-gray-400">
               <svg
                 className="w-12 h-12 mx-auto mb-2"
                 fill="none"
@@ -259,7 +259,7 @@ export default function QRScannerWithModal() {
           {isScanning ? "Escaneando..." : "Escanear"}
         </button>
 
-        <label className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg shadow-md cursor-pointer transition-all duration-200">
+        <label className="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg shadow-md cursor-pointer transition-all duration-200">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
           </svg>
@@ -295,7 +295,7 @@ export default function QRScannerWithModal() {
 
       {/* Indicadores de carga y mensajes */}
       {isLoadingProduct && (
-        <div className="flex items-center gap-3 text-blue-600 bg-blue-50 px-4 py-2 rounded-lg shadow-sm">
+        <div className="flex items-center gap-3 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900 px-4 py-2 rounded-lg shadow-sm">
           <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
@@ -304,7 +304,7 @@ export default function QRScannerWithModal() {
       )}
 
       {error && (
-        <div className="flex items-center gap-3 text-red-600 bg-red-50 px-4 py-2 rounded-lg shadow-sm animate-fade-in" role="alert">
+        <div className="flex items-center gap-3 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900 px-4 py-2 rounded-lg shadow-sm animate-fade-in" role="alert">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
@@ -313,7 +313,7 @@ export default function QRScannerWithModal() {
       )}
 
       {success && (
-        <div className="flex items-center gap-3 text-green-600 bg-green-50 px-4 py-2 rounded-lg shadow-sm animate-fade-in" role="status">
+        <div className="flex items-center gap-3 text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900 px-4 py-2 rounded-lg shadow-sm animate-fade-in" role="status">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>

@@ -39,9 +39,9 @@ const pageData = {
   equipo: {
     title: "Nuestro Equipo",
     members: [
-      { name: "-Nombre-", role: "Fundador", image: "/images/placeholder.png" }, // Cambia imágenes
-      { name: "-Nombre-", role: "Encargado de Ventas", image: "/images/placeholder.png" },
-      { name: "-Nombre-", role: "Encargado de Inventario", image: "/images/placeholder.png" },
+      { name: "--Nombre--", role: "Fundador", image: "/images/placeholder.png" }, // Cambia imágenes
+      { name: "--Nombre--", role: "Encargado de Ventas", image: "/images/placeholder.png" },
+      { name: "--Nombre--", role: "Encargado de Inventario", image: "/images/placeholder.png" },
     ],
   },
   contacto: {
@@ -59,7 +59,7 @@ export default function NosotrosPage() {
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + pageData.carrusel.items.length) % pageData.carrusel.items.length);
 
   return (
-    <div className="min-h-screen flex flex-col bg-linear-to-r from-gray-50 to-blue-50">
+    <div className="min-h-screen flex flex-col bg-linear-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
       <Header />
 
       {/* Hero Section */}
@@ -73,7 +73,7 @@ export default function NosotrosPage() {
               className="object-cover"
               onError={(e) => (e.currentTarget.src = "/images/placeholder.png")}
             />
-            <div className="absolute inset-0 bg-linear-to-r from-blue-600/70 to-indigo-600/70 flex items-center justify-center">
+            <div className="absolute inset-0 bg-linear-to-br from-blue-600/70 to-indigo-600/70 dark:from-gray-800/70 dark:to-gray-900/70 flex items-center justify-center">
               <div className="text-white">
                 <h1 className="text-3xl md:text-5xl font-bold mb-4">{pageData.hero.title}</h1>
                 <p className="text-lg md:text-xl mb-2">{pageData.hero.subtitle}</p>
@@ -85,17 +85,17 @@ export default function NosotrosPage() {
       </section>
 
       {/* Historia */}
-      <section className="px-4 md:px-6 lg:px-8 py-12 bg-white">
+      <section className="px-4 md:px-6 lg:px-8 py-12 bg-white dark:bg-gray-800">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">{pageData.historia.title}</h2>
-          <p className="text-base md:text-lg text-gray-700 leading-relaxed">{pageData.historia.text}</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">{pageData.historia.title}</h2>
+          <p className="text-base md:text-lg text-gray-700 dark:text-gray-300 leading-relaxed">{pageData.historia.text}</p>
         </div>
       </section>
 
       {/* Carrusel */}
-      <section className="px-4 md:px-6 lg:px-8 py-12 bg-gray-100">
+      <section className="px-4 md:px-6 lg:px-8 py-12 bg-gray-100 dark:bg-gray-700">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-8">{pageData.carrusel.title}</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">{pageData.carrusel.title}</h2>
           <div className="relative overflow-hidden rounded-lg shadow-lg">
             <div
               className="flex transition-transform duration-500 ease-in-out"
@@ -110,7 +110,7 @@ export default function NosotrosPage() {
                     className="object-cover"
                     onError={(e) => (e.currentTarget.src = "/images/placeholder.png")}
                   />
-                  <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white p-4">
+                  <div className="absolute bottom-0 left-0 right-0 bg-black/60 dark:bg-black/70 text-white p-4">
                     <p className="text-sm md:text-base">{item.caption}</p>
                   </div>
                 </div>
@@ -119,7 +119,7 @@ export default function NosotrosPage() {
             {/* Controles del Carrusel */}
             <button
               onClick={prevSlide}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-md transition-all"
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-800 rounded-full p-2 shadow-md transition-all"
               aria-label="Anterior"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -128,7 +128,7 @@ export default function NosotrosPage() {
             </button>
             <button
               onClick={nextSlide}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-md transition-all"
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-800 rounded-full p-2 shadow-md transition-all"
               aria-label="Siguiente"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -140,28 +140,28 @@ export default function NosotrosPage() {
       </section>
 
       {/* Misión y Visión */}
-      <section className="px-4 md:px-6 lg:px-8 py-12 bg-white">
+      <section className="px-4 md:px-6 lg:px-8 py-12 bg-white dark:bg-gray-800">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="text-center p-6 bg-linear-to-r from-blue-50 to-indigo-50 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+          <div className="text-center p-6 bg-linear-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-600 rounded-lg shadow-md hover:shadow-lg transition-shadow">
             <div className="text-4xl mb-4">{pageData.misionVision.mision.icon}</div>
-            <h3 className="text-xl font-bold text-gray-800 mb-4">{pageData.misionVision.mision.title}</h3>
-            <p className="text-gray-700">{pageData.misionVision.mision.text}</p>
+            <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4">{pageData.misionVision.mision.title}</h3>
+            <p className="text-gray-700 dark:text-gray-300">{pageData.misionVision.mision.text}</p>
           </div>
-          <div className="text-center p-6 bg-linear-to-r from-green-50 to-teal-50 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+          <div className="text-center p-6 bg-linear-to-br from-green-50 to-teal-50 dark:from-gray-700 dark:to-gray-600 rounded-lg shadow-md hover:shadow-lg transition-shadow">
             <div className="text-4xl mb-4">{pageData.misionVision.vision.icon}</div>
-            <h3 className="text-xl font-bold text-gray-800 mb-4">{pageData.misionVision.vision.title}</h3>
-            <p className="text-gray-700">{pageData.misionVision.vision.text}</p>
+            <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4">{pageData.misionVision.vision.title}</h3>
+            <p className="text-gray-700 dark:text-gray-300">{pageData.misionVision.vision.text}</p>
           </div>
         </div>
       </section>
 
       {/* Equipo */}
-      <section className="px-4 md:px-6 lg:px-8 py-12 bg-gray-100">
+      <section className="px-4 md:px-6 lg:px-8 py-12 bg-gray-100 dark:bg-gray-700">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-8">{pageData.equipo.title}</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">{pageData.equipo.title}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {pageData.equipo.members.map((member, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 p-6 text-center">
+              <div key={index} className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 p-6 text-center">
                 <div className="relative w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden">
                   <Image
                     src={member.image}
@@ -171,8 +171,8 @@ export default function NosotrosPage() {
                     onError={(e) => (e.currentTarget.src = "/images/placeholder.png")}
                   />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800">{member.name}</h3>
-                <p className="text-gray-600">{member.role}</p>
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">{member.name}</h3>
+                <p className="text-gray-600 dark:text-gray-400">{member.role}</p>
               </div>
             ))}
           </div>
@@ -180,25 +180,25 @@ export default function NosotrosPage() {
       </section>
 
       {/* Contacto */}
-      <section className="px-4 md:px-6 lg:px-8 py-12 bg-white">
+      <section className="px-4 md:px-6 lg:px-8 py-12 bg-white dark:bg-gray-800">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">{pageData.contacto.title}</h2>
-          <p className="text-base md:text-lg text-gray-700 mb-6">{pageData.contacto.text}</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">{pageData.contacto.title}</h2>
+          <p className="text-base md:text-lg text-gray-700 dark:text-gray-300 mb-6">{pageData.contacto.text}</p>
           <div className="flex flex-col md:flex-row justify-center items-center gap-4">
-            <p className="text-gray-600"><strong>Email:</strong> {pageData.contacto.email}</p>
-            <p className="text-gray-600"><strong>Teléfono:</strong> {pageData.contacto.phone}</p>
+            <p className="text-gray-600 dark:text-gray-400"><strong>Email:</strong> {pageData.contacto.email}</p>
+            <p className="text-gray-600 dark:text-gray-400"><strong>Teléfono:</strong> {pageData.contacto.phone}</p>
           </div>
           {/* Formulario simple (opcional, para integridad) */}
           <form className="mt-8 max-w-md mx-auto space-y-4">
-            <input type="text" placeholder="Tu nombre" className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            <input type="email" placeholder="Tu email" className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            <textarea placeholder="Mensaje" rows={4} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-            <button type="submit" className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors">Enviar Mensaje</button>
+            <input type="text" placeholder="Tu nombre" className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200" />
+            <input type="email" placeholder="Tu email" className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200" />
+            <textarea placeholder="Mensaje" rows={4} className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"></textarea>
+            <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition-colors">Enviar Mensaje</button>
           </form>
         </div>
       </section>
 
-      <footer className="bg-gray-100 text-center py-3 md:py-4 text-xs md:text-sm text-gray-600 border-t">
+      <footer className="bottom-0 left-0 right-0 bg-gray-100 dark:bg-gray-800 text-center py-3 md:py-4 text-xs md:text-sm text-gray-600 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 z-10">
         <p>&copy; 2025 J&Y Store. Todos los derechos reservados.</p>
       </footer>
     </div>
