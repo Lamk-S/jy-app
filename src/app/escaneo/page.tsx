@@ -11,10 +11,6 @@ export default function EscaneoPage() {
         <QRScannerWithModal />
       </main>
       
-      <div className="fixed bottom-16 right-4 md:right-6 z-30">
-        <CartButton />
-      </div>
-      
       <footer className="fixed bottom-0 left-0 right-0 bg-gray-100 dark:bg-gray-800 text-center py-3 md:py-4 text-xs md:text-sm text-gray-600 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 z-20">
         <p>&copy; 2025 J&Y Store. Todos los derechos reservados.</p>
       </footer>
