@@ -1,6 +1,5 @@
 import Header from "@/components/Header";
 import ProductList from "@/components/ProductList";
-import CartButton from "@/components/CartButton";
 
 export default function HomePage() {
   return (

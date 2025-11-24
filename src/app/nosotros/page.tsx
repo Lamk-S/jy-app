@@ -4,13 +4,13 @@ import { useState } from "react";
 import Header from "@/components/Header";
 import Image from "next/image";
 
-// Datos editables: Cambia texto e imágenes aquí
+// Datos editables
 const pageData = {
   hero: {
     title: "Sobre J&Y Store",
     subtitle: "Comprometidos con la calidad y tu satisfacción desde 2025",
     description: "Descubre nuestra historia, valores y el equipo detrás de tu experiencia de compra.",
-    image: "/images/placeholder.png", // Cambia a /images/nosotros/banner.jpg
+    image: "/images/placeholder.png",
   },
   historia: {
     title: "Nuestra Historia",
@@ -19,7 +19,7 @@ const pageData = {
   carrusel: {
     title: "Momentos que Nos Definen",
     items: [
-      { image: "/images/placeholder.png", alt: "Tienda física", caption: "Nuestra primera tienda en la ciudad." }, // Cambia imágenes
+      { image: "/images/placeholder.png", alt: "Tienda física", caption: "Nuestra primera tienda en la ciudad." },
       { image: "/images/placeholder.png", alt: "Equipo trabajando", caption: "Nuestro equipo colaborando para ti." },
       { image: "/images/placeholder.png", alt: "Clientes felices", caption: "Clientes satisfechos con nuestros productos." },
     ],
@@ -28,7 +28,7 @@ const pageData = {
     mision: {
       title: "Misión",
       text: "Proporcionar productos de calidad que mejoren la vida diaria de nuestros clientes, con un enfoque en la sostenibilidad y la innovación.",
-      icon: "🎯", // Ícono simple; puedes usar SVG
+      icon: "🎯",
     },
     vision: {
       title: "Visión",
@@ -39,7 +39,7 @@ const pageData = {
   equipo: {
     title: "Nuestro Equipo",
     members: [
-      { name: "--Nombre--", role: "Fundador", image: "/images/placeholder.png" }, // Cambia imágenes
+      { name: "--Nombre--", role: "Fundador", image: "/images/placeholder.png" },
       { name: "--Nombre--", role: "Encargado de Ventas", image: "/images/placeholder.png" },
       { name: "--Nombre--", role: "Encargado de Inventario", image: "/images/placeholder.png" },
     ],

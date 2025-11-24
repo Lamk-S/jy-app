@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useThemeStore } from "@/store/useThemeStore";
-import { useCartStore } from "@/store/useCartStore";
+import { useCartStore, CartItem } from "@/store/useCartStore";
 import CartModal from "./CartModal";
 
 export default function Header() {
@@ -14,7 +14,8 @@ export default function Header() {
   const { isDark, toggle } = useThemeStore();
   const [hydrated, setHydrated] = useState(false);
   const pathname = usePathname();
-  const totalItems = useCartStore((s) => s.items.reduce((sum, i) => sum + i.qty, 0));
+  const { items, addItem } = useCartStore();
+  const totalItems = items.reduce((sum, i) => sum + i.qty, 0);
 
   useEffect(() => {
     setHydrated(true);
@@ -27,6 +28,24 @@ export default function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('jy-cart-storage');
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (parsed.items && Array.isArray(parsed.items)) {
+          parsed.items.forEach((item: CartItem) => addItem(item));
+        }
+      } catch (error) {
+        console.error('Error al cargar el carrito desde localStorage:', error);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('jy-cart-storage', JSON.stringify({ items }));
+  }, [items]);
 
   const isStatic = pathname === "/escaneo";
 
@@ -101,7 +120,7 @@ export default function Header() {
               aria-label="Abrir carrito de compras"
             >
               <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"/>
+                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"/>
               </svg>
               {totalItems > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full px-2 py-1">
@@ -140,7 +159,7 @@ export default function Header() {
       </header>
 
       {/* Modal del Carrito */}
-      {isCartOpen && <CartModal onClose={() => setIsCartOpen(false)} />}
+      <CartModal open={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </>
   );
 }

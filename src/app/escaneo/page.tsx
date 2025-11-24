@@ -1,6 +1,5 @@
 import Header from "@/components/Header";
 import QRScannerWithModal from "@/components/QRScannerWithModal";
-import CartButton from "@/components/CartButton";
 
 export default function EscaneoPage() {
   return (
