@@ -110,8 +110,6 @@ export default function Header() {
                 <div className="w-5 h-5 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
               )}
             </button>
-            
-            
 
             {/* Botón del Carrito */}
             <button
