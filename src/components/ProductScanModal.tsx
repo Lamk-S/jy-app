@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useCartStore } from "@/store/useCartStore";
 import { X, Plus, Minus, ShoppingCart, AlertCircle } from "lucide-react";
-import type { Product, Variant } from "@/types/product";
+import type { Product, Variant, Color, Size } from "@/types/product"; // Agregados Color y Size
 import Image from "next/image";
 
 interface ProductScanModalProps {
@@ -13,39 +13,46 @@ interface ProductScanModalProps {
 
 export default function ProductScanModal({ product, onClose }: ProductScanModalProps) {
   const addItem = useCartStore((state) => state.addItem);
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<Color | null>(null); // Actualizado: Tipo Color
+  const [selectedSize, setSelectedSize] = useState<Size | null>(null); // Actualizado: Tipo Size
   const [qty, setQty] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [isAdding, setIsAdding] = useState(false);
 
+  // Actualizado: Busca variante por color y size (no solo size)
   const selectedVariant: Variant | undefined = product.variants?.find(
-    (v) => v.size === selectedSize
+    (v) => v.color.id === selectedColor?.id && v.size.code === selectedSize?.code
   );
 
-  // Colores simulados (reemplaza con datos reales)
-  const colors = [
-    { id: 'white', name: 'Blanco', classes: 'bg-white border-gray-300' },
-    { id: 'gray', name: 'Gris', classes: 'bg-gray-400 border-gray-400' },
-    { id: 'black', name: 'Negro', classes: 'bg-black border-black' },
-  ];
+  // Filtra tallas disponibles para el color seleccionado
+  const availableSizes = selectedColor
+    ? product.variants?.filter((v) => v.color.id === selectedColor.id).map((v) => v.size) || []
+    : [];
 
-  // Imágenes simuladas (reemplaza con product.images)
-  const images = [
-    { src: '/images/placeholder.png', alt: `${product.name} vista principal` },
-    { src: '/images/placeholder.png', alt: `${product.name} vista secundaria` },
-    { src: '/images/placeholder.png', alt: `${product.name} vista terciaria` },
-  ];
+  // Filtra imágenes por color seleccionado (o genéricas si no hay color específico)
+  const relevantImages = product.images?.filter(
+    (img) => !img.color_id || img.color_id === selectedColor?.id
+  ) || [];
+  const images = relevantImages.length
+    ? relevantImages.map((img) => ({
+        src: `/images/${img.filename}`, // Construye URL relativa
+        alt: img.alt_text || `${product.name} - ${selectedColor?.name || 'Vista general'}`,
+      }))
+    : [{ src: '/images/placeholder.png', alt: `${product.name} - Sin imagen` }]; // Fallback
 
-  const handleSizeSelect = (size: string) => {
+  const handleColorSelect = (color: Color) => {
+    setSelectedColor(color);
+    setSelectedSize(null); // Resetea talla al cambiar color
+    setQty(1);
+    setError(null);
+    setSelectedImage(0); // Resetea imagen
+  };
+
+  const handleSizeSelect = (size: Size) => {
     setSelectedSize(size);
     setQty(1);
     setError(null);
-  };
-
-  const handleColorSelect = (color: string) => {
-    setSelectedColor(color);
   };
 
   const handleQtyChange = (delta: number) => {
@@ -58,8 +65,8 @@ export default function ProductScanModal({ product, onClose }: ProductScanModalP
   };
 
   const handleAddToCart = async () => {
-    if (!selectedSize) {
-      setError("Por favor seleccione una talla.");
+    if (!selectedColor || !selectedSize) {
+      setError("Por favor seleccione un color y una talla.");
       return;
     }
 
@@ -75,11 +82,12 @@ export default function ProductScanModal({ product, onClose }: ProductScanModalP
         productId: product.id,
         productName: product.name,
         sku: product.sku,
-        size: selectedSize,
+        color: selectedColor, // Actualizado: Pasa objeto Color completo
+        size: selectedSize, // Actualizado: Pasa objeto Size completo
         qty,
         price: product.price ?? 0,
         stock,
-        imageSrc: images[selectedImage].src,
+        imageSrc: images[selectedImage]?.src || '/images/placeholder.png',
       });
       setIsAdding(false);
       onClose();
@@ -105,15 +113,15 @@ export default function ProductScanModal({ product, onClose }: ProductScanModalP
             {/* Imagen principal */}
             <div className="relative w-full h-72 sm:h-96 lg:h-full lg:flex-1 bg-linear-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
               <Image
-                src={images[selectedImage].src}
-                alt={images[selectedImage].alt}
+                src={images[selectedImage]?.src || '/images/placeholder.png'}
+                alt={images[selectedImage]?.alt || `${product.name}`}
                 fill
                 className="object-contain p-6 lg:p-8"
                 priority
               />
             </div>
 
-            {/* Thumbnails: En móvil apilados, en PC en columna vertical o 2 columnas */}
+            {/* Thumbnails */}
             <div className="flex lg:flex-col gap-3 p-4 lg:w-26 lg:justify-start lg:overflow-y-auto">
               {images.map((image, index) => (
                 <button
@@ -175,26 +183,28 @@ export default function ProductScanModal({ product, onClose }: ProductScanModalP
             <div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Color</h3>
               <fieldset aria-label="Elige un color" className="flex items-center gap-4">
-                {colors.map((color) => (
+                {product.colors?.map((color) => (
                   <label key={color.id} className="relative cursor-pointer group">
                     <input
                       type="radio"
                       name="color"
                       value={color.id}
-                      checked={selectedColor === color.id}
-                      onChange={() => handleColorSelect(color.id)}
+                      checked={selectedColor?.id === color.id}
+                      onChange={() => handleColorSelect(color)}
                       className="sr-only"
                     />
                     <span
                       className={`block w-12 h-12 rounded-full border-2 transition-all duration-200 group-hover:scale-110 ${
-                        selectedColor === color.id
+                        selectedColor?.id === color.id
                           ? 'border-indigo-600 scale-110 shadow-lg'
                           : 'border-gray-300 hover:border-indigo-400'
-                      } ${color.classes}`}
+                      } bg-${color.name.toLowerCase()}-500`} // Simplificado: Usa clases dinámicas o Tailwind si configuras
                       title={color.name}
                     ></span>
                   </label>
-                ))}
+                )) || (
+                  <p className="text-gray-500 dark:text-gray-400">No hay colores disponibles.</p>
+                )}
               </fieldset>
             </div>
 
@@ -210,38 +220,43 @@ export default function ProductScanModal({ product, onClose }: ProductScanModalP
                 </a>
               </div>
               <fieldset aria-label="Elige una talla" className="grid grid-cols-4 gap-4">
-                {product.variants?.length ? (
-                  product.variants.map((v) => (
-                    <label
-                      key={v.id}
-                      className={`group relative flex items-center justify-center rounded-xl border-2 p-4 cursor-pointer transition-all duration-200 ${
-                        selectedSize === v.size
-                          ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 shadow-lg scale-105'
-                          : v.stock === 0
-                          ? 'border-gray-300 bg-gray-100 dark:bg-gray-800 text-gray-400 cursor-not-allowed opacity-60'
-                          : 'border-gray-300 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 hover:border-indigo-400 hover:shadow-md hover:scale-105'
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="size"
-                        value={v.size}
-                        checked={selectedSize === v.size}
-                        onChange={() => handleSizeSelect(v.size)}
-                        disabled={v.stock === 0}
-                        className="sr-only"
-                      />
-                      <span className="text-lg font-bold uppercase">{v.size}</span>
-                      {v.stock === 0 && (
-                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
-                          Agotado
-                        </span>
-                      )}
-                    </label>
-                  ))
+                {availableSizes.length ? (
+                  availableSizes.map((size) => {
+                    const variant = product.variants?.find(
+                      (v) => v.color.id === selectedColor?.id && v.size.id === size.id
+                    );
+                    return (
+                      <label
+                        key={size.id}
+                        className={`group relative flex items-center justify-center rounded-xl border-2 p-4 cursor-pointer transition-all duration-200 ${
+                          selectedSize?.id === size.id
+                            ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 shadow-lg scale-105'
+                            : (variant?.stock ?? 0) === 0
+                            ? 'border-gray-300 bg-gray-100 dark:bg-gray-800 text-gray-400 cursor-not-allowed opacity-60'
+                            : 'border-gray-300 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 hover:border-indigo-400 hover:shadow-md hover:scale-105'
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="size"
+                          value={size.code}
+                          checked={selectedSize?.id === size.id}
+                          onChange={() => handleSizeSelect(size)}
+                          disabled={(variant?.stock ?? 0) === 0}
+                          className="sr-only"
+                        />
+                        <span className="text-lg font-bold uppercase">{size.code}</span>
+                        {(variant?.stock ?? 0) === 0 && (
+                          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
+                            Agotado
+                          </span>
+                        )}
+                      </label>
+                    );
+                  })
                 ) : (
                   <p className="col-span-4 text-gray-500 dark:text-gray-400 text-center py-6 text-lg">
-                    No hay tallas disponibles.
+                    Selecciona un color para ver tallas disponibles.
                   </p>
                 )}
               </fieldset>
@@ -289,7 +304,7 @@ export default function ProductScanModal({ product, onClose }: ProductScanModalP
             {/* Botón agregar */}
             <button
               onClick={handleAddToCart}
-              disabled={!selectedSize || qty > (selectedVariant?.stock || 0) || isAdding}
+              disabled={!selectedColor || !selectedSize || qty > (selectedVariant?.stock || 0) || isAdding}
               className="w-full bg-linear-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 disabled:from-gray-400 disabled:to-gray-500 text-white py-5 rounded-xl font-bold text-lg disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               {isAdding ? (

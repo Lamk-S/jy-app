@@ -30,18 +30,30 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    const stored = localStorage.getItem('jy-cart-storage');
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        if (parsed.items && Array.isArray(parsed.items)) {
-          parsed.items.forEach((item: CartItem) => addItem(item));
-        }
-      } catch (error) {
-        console.error('Error al cargar el carrito desde localStorage:', error);
+  const stored = localStorage.getItem('jy-cart-storage');
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      if (parsed.items && Array.isArray(parsed.items)) {
+        parsed.items.forEach((item: any) => {
+          // Migración: Convierte color y size a objetos si son strings/null
+          const migratedItem = {
+            ...item,
+            color: typeof item.color === 'object' && item.color?.id
+              ? item.color
+              : { id: 0, name: item.color || 'Sin Color' }, // Objeto dummy si es string
+            size: typeof item.size === 'object' && item.size?.id
+              ? item.size
+              : { id: 0, code: item.size || 'N/A' }, // Objeto dummy si es string
+          };
+          addItem(migratedItem);
+        });
       }
+    } catch (error) {
+      console.error('Error al cargar el carrito desde localStorage:', error);
     }
-  }, []);
+  }
+}, []);
 
   useEffect(() => {
     localStorage.setItem('jy-cart-storage', JSON.stringify({ items }));

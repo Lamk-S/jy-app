@@ -9,12 +9,9 @@ export default function CartModal({ open, onClose }: { open: boolean; onClose: (
   const { items, removeItem, clear, updateQty, getTotal } = useCartStore();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-
-  // Calcula el total usando la función del store
   const total = getTotal();
 
-  // Función para manejar cambios de cantidad con validación
-  const handleQtyChange = (productId: number, size: string | null, newQty: number, stock: number) => {
+  const handleQtyChange = (productId: number, colorId: number, sizeId: number, newQty: number, stock: number) => {
     setError(null);
     setSuccess(null);
     if (newQty < 1) {
@@ -25,11 +22,10 @@ export default function CartModal({ open, onClose }: { open: boolean; onClose: (
       setError(`Stock insuficiente. Solo hay ${stock} unidades disponibles.`);
       return;
     }
-    updateQty(productId, size, newQty);
+    updateQty(productId, colorId, sizeId, newQty);
     setSuccess("Cantidad actualizada.");
   };
 
-  // Limpia mensajes después de 3 segundos
   useEffect(() => {
     if (error || success) {
       const timer = setTimeout(() => {
@@ -108,7 +104,7 @@ export default function CartModal({ open, onClose }: { open: boolean; onClose: (
                   ) : (
                     <ul role="list" className="space-y-3 sm:space-y-4">
                       {items.map((item) => (
-                        <li key={`${item.productId}-${item.size}`} className="flex py-6">
+                        <li key={`${item.productId}-${item.color.id}-${item.size.id}`} className="flex py-6">
                           <div className="size-20 sm:size-24 shrink-0 overflow-hidden rounded-md border border-gray-200 dark:border-gray-600">
                             <img
                               alt={item.productName}
@@ -131,14 +127,16 @@ export default function CartModal({ open, onClose }: { open: boolean; onClose: (
                               <div className="flex justify-between text-base font-medium text-gray-900 dark:text-gray-200">
                                 <p className="mt-1 text-sm text-green-500 dark:text-green-400">Subtotal</p>
                                 <p className="ml-4 text-green-500 dark:text-green-400">S/.{(item.price ? item.price * item.qty : 0).toFixed(2) || "N/A"}</p>
-                              </div>         
-                              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Talla: {item.size || "N/A"} | Stock: {item.stock}</p>                     
+                              </div>
+                              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                Color: {item.color.name} | Talla: {item.size.code} | Stock: {item.stock}
+                              </p>
                             </div>
                             <div className="flex flex-1 items-end justify-between text-sm">
                               <div className="flex items-center gap-2">
                                 {/* Controles de cantidad */}
                                 <button
-                                  onClick={() => handleQtyChange(item.productId, item.size, item.qty - 1, item.stock)}
+                                  onClick={() => handleQtyChange(item.productId, item.color.id, item.size.id, item.qty - 1, item.stock)}
                                   className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-full flex items-center justify-center transition-colors"
                                   aria-label="Disminuir cantidad"
                                 >
@@ -148,7 +146,7 @@ export default function CartModal({ open, onClose }: { open: boolean; onClose: (
                                 </button>
                                 <span className="w-6 sm:w-8 text-center font-medium text-sm sm:text-base">{item.qty}</span>
                                 <button
-                                  onClick={() => handleQtyChange(item.productId, item.size, item.qty + 1, item.stock)}
+                                  onClick={() => handleQtyChange(item.productId, item.color.id, item.size.id, item.qty + 1, item.stock)}
                                   className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-full flex items-center justify-center transition-colors"
                                   aria-label="Aumentar cantidad"
                                 >
@@ -160,7 +158,7 @@ export default function CartModal({ open, onClose }: { open: boolean; onClose: (
 
                               <div className="flex">
                                 <button
-                                  onClick={() => removeItem(item.productId, item.size)}
+                                  onClick={() => removeItem(item.productId, item.color.id, item.size.id)}
                                   className="font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300"
                                 >
                                   Remove

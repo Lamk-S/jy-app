@@ -1,14 +1,29 @@
 export type Size = {
-  code: string;
+  id: number;
+  code: string; // e.g., "S", "M", "L", "30"
+  name?: string;
+};
+
+export type Color = {
+  id: number;
+  name: string; // e.g., "Rojo", "Azul"
+};
+
+export type ProductImage = {
+  id: number;
+  filename: string;
+  alt_text?: string;
+  is_primary: boolean;
+  color_id?: number | null;
 };
 
 export type Variant = {
   id: number;
-  size: string; // código visible ("S", "M", "L", "30", etc.)
+  color: Color;
+  size: Size;
   stock: number;
 };
 
-// Tipo que usa el frontend, incluye variants
 export type Product = {
   id: number;
   sku: string;
@@ -17,10 +32,11 @@ export type Product = {
   price?: number | null;
   description?: string | null;
   total_stock: number;
+  colors?: Color[];
+  images?: ProductImage[];
   variants?: Variant[];
 };
 
-// Tipo que refleja exactamente la tabla en Supabase
 export type ProductRow = {
   id: number;
   sku: string;
@@ -29,4 +45,7 @@ export type ProductRow = {
   price?: number | null;
   description?: string | null;
   total_stock: number;
+  colors?: Color[];
+  images?: ProductImage[];
+  variants?: Variant[];
 };

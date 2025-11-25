@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Html5Qrcode, Html5QrcodeScannerState } from "html5-qrcode";
 import { createClient } from "@supabase/supabase-js";
-import type { Product, Variant } from "@/types/product";
+import type { Product, Variant, Color, Size, ProductImage } from "@/types/product";
 import ProductScanModal from "./ProductScanModal";
 
 const supabase = createClient(
@@ -137,12 +137,18 @@ export default function QRScannerWithModal() {
     if (scanner) await stopCamera(); // Detener solo si estaba escaneando desde cámara
   }, [scanner, stopCamera]);
 
-  // Fetch product por SKU
+  // Fetch product por SKU (actualizado para esquema extendido)
   const fetchProductBySku = useCallback(async (sku: string) => {
     try {
+      // Query principal con joins para colores, imágenes y stock
       const { data, error } = await supabase
         .from("products")
-        .select("*")
+        .select(`
+          *,
+          product_colors(colors(*)),
+          product_images(*),
+          product_stock(id, quantity, colors(*), sizes(*))
+        `)
         .eq("sku", sku)
         .single();
 
@@ -151,7 +157,27 @@ export default function QRScannerWithModal() {
         return;
       }
 
-      // Convertir a Product manualmente
+      // Mapear colores
+      const colors: Color[] = data.product_colors?.map((pc: any) => pc.colors) || [];
+
+      // Mapear imágenes
+      const images: ProductImage[] = data.product_images?.map((img: any) => ({
+        id: img.id,
+        filename: img.filename,
+        alt_text: img.alt_text,
+        is_primary: img.is_primary,
+        color_id: img.color_id,
+      })) || [];
+
+      // Mapear variantes (stock por color-talla)
+      const variants: Variant[] = data.product_stock?.map((ps: any) => ({
+        id: ps.id,
+        color: ps.colors, // Objeto Color
+        size: ps.sizes,   // Objeto Size
+        stock: ps.quantity,
+      })) || [];
+
+      // Construir objeto Product
       const productData: Product = {
         id: data.id,
         sku: data.sku,
@@ -160,23 +186,12 @@ export default function QRScannerWithModal() {
         price: data.price ?? null,
         description: data.description ?? null,
         total_stock: data.total_stock,
-        variants: [],
+        colors,
+        images,
+        variants,
       };
 
-      // Traer variantes
-      const { data: variantsData } = await supabase
-        .from("size_stock")
-        .select("id, quantity, sizes(code)")
-        .eq("product_id", productData.id);
-
-      const variants: Variant[] =
-        variantsData?.map((v: any) => ({
-          id: v.id,
-          size: v.sizes?.code ?? "N/A",
-          stock: v.quantity,
-        })) ?? [];
-
-      setProduct({ ...productData, variants });
+      setProduct(productData);
       setSuccess("Producto encontrado exitosamente.");
     } catch (err) {
       console.error("Error al buscar producto:", err);

@@ -1,22 +1,23 @@
-// src/store/useCartStore.ts
 import { create } from "zustand";
+import type { Color, Size } from "@/types/product";
 
 export type CartItem = {
   productId: number;
   productName: string;
-  sku: string; // Agregado para generar la URL de la imagen
-  size: string | null;
+  sku: string;
+  color: Color;
+  size: Size;
   qty: number;
   price: number | null;
   stock: number;
-  imageSrc?: string; // Agregado para la imagen del producto
+  imageSrc?: string;
 };
 
 type CartState = {
   items: CartItem[];
   addItem: (item: CartItem) => void;
-  updateQty: (productId: number, size: string | null, qty: number) => void;
-  removeItem: (productId: number, size: string | null) => void;
+  updateQty: (productId: number, colorId: number, sizeId: number, qty: number) => void;
+  removeItem: (productId: number, colorId: number, sizeId: number) => void;
   clear: () => void;
   getTotal: () => number;
 };
@@ -26,7 +27,8 @@ export const useCartStore = create<CartState>((set, get) => ({
 
   addItem: (item) =>
     set((state) => {
-      const key = (i: CartItem) => `${i.productId}-${i.size ?? ""}`;
+      // Clave única: productId + colorId + sizeId
+      const key = (i: CartItem) => `${i.productId}-${i.color.id}-${i.size.id}`;
       const existing = state.items.find((i) => key(i) === key(item));
 
       if (existing) {
@@ -50,19 +52,21 @@ export const useCartStore = create<CartState>((set, get) => ({
       return { items: [...state.items, item] };
     }),
 
-  updateQty: (productId, size, qty) =>
+  // updateQty usa IDs de color y size
+  updateQty: (productId, colorId, sizeId, qty) =>
     set((state) => ({
       items: state.items.map((i) =>
-        i.productId === productId && i.size === size
+        i.productId === productId && i.color.id === colorId && i.size.id === sizeId
           ? { ...i, qty: Math.min(qty, i.stock) }
           : i
       ),
     })),
 
-  removeItem: (productId, size) =>
+  // removeItem usa IDs de color y size
+  removeItem: (productId, colorId, sizeId) =>
     set((state) => ({
       items: state.items.filter(
-        (i) => !(i.productId === productId && i.size === size)
+        (i) => !(i.productId === productId && i.color.id === colorId && i.size.id === sizeId)
       ),
     })),
 
